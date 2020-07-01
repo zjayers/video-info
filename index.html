@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Video Parse</title>
+  </head>
+  <body>
+    <h1>Video Parse</h1>
+    <form>
+      <div>
+        <label for="">Select a video</label>
+        <input accept="video/*" type="file" />
+      </div>
+      <button type="submit">Get Info</button>
+    </form>
+
+    <h1 id="result"></h1>
+    <script>
+      const electron = require("electron");
+
+      const { ipcRenderer } = electron;
+
+      /* Event handler for parsing file information */
+      document.querySelector("form").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const { path } = document.querySelector("input").files[0];
+        ipcRenderer.send("video:submit", path);
+      });
+
+      ipcRenderer.on("video:metadata", (event, metadata) => {
+        document.getElementById(
+          "result"
+        ).innerHTML = `Video is ${metadata} seconds`;
+      });
+    </script>
+  </body>
+</html>
